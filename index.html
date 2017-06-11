@@ -6,8 +6,16 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 <body>
+    <div class="tile">
+        
+        <div id = "tilediv">
+            <div id = "yellowdiv" class = "tilesd">&nbsp;</div><div id = "greendiv" class = "tilesd"><span class="title">Bussing</span></div><div id = "reddiv" class = "tilesd">&nbsp;</div>
+        </div>
+        </div>
+    </div>
+    <div class="fullscreen">
     <!--This is where accordion is built -->
-	<div class="panel-group" id="accordion"></div>
+	<div class="panel-group" id="accordion"></div></div>
 
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCwZF98BYxJI7n2QcCd3q6-O3LwyAsg528"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
@@ -19,18 +27,17 @@
 	var directionsDisplay = new google.maps.DirectionsRenderer;
 
     //Function that binds each accordion into initialize_map-function
-	function initinit(j, clat, clon, x, y) {
+	function initinit(j, clat, clon, x, y, deps, times) {
 		$('#collapse'+j).on('hidden.bs.collapse', function (e) {
-            initialize_map(j, clat, clon, x, y);
+            initialize_map(j, clat, clon, x, y, deps, times);
         });
         $('#collapse'+j).on('shown.bs.collapse', function (e) {
-            initialize_map(j, clat, clon, x, y); 
+            initialize_map(j, clat, clon, x, y, deps, times); 
         })
 	}
 
     //Function that initializes the map to announced accordion tab with given attributes
-	function initialize_map(j, clat, clon, x, y) {
-        var nro = j;
+	function initialize_map(ind, clat, clon, x, y, deps, times) {
         var myLatlng = new google.maps.LatLng(clat,clon);
         var mapOptions = {
             zoom: 17,
@@ -39,14 +46,16 @@
             center: myLatlng
         };
 
-        var map = new google.maps.Map(document.getElementById('google-map'+nro), mapOptions);
+        var map = new google.maps.Map(document.getElementById('google-map'+ind), mapOptions);
 
         directionsDisplay.setMap(map);
-            calculateAndDisplayRoute(clat, clon, directionsDisplay, nro, x, y, map);
+            calculateAndDisplayRoute(clat, clon, directionsDisplay, ind, x, y, map, deps, times);
         }
 
         //Function that calculates distance and duration and displays the route on map.
-        function calculateAndDisplayRoute(clat, clon, directionsDisplay, nro, x, y, map) {
+        function calculateAndDisplayRoute(clat, clon, directionsDisplay, nro, x, y, map, deps, times) {
+            var spldeps = deps.split(",");
+            var spltime = times.split(",");
         	var directionsService = new google.maps.DirectionsService;
             directionsService.route({
                 origin: new google.maps.LatLng(clat, clon),
@@ -55,10 +64,21 @@
             }, function(response, status) {
                 if (status === 'OK') {
                     directionsDisplay.setDirections(response);
-                    var infowindow2 = new google.maps.InfoWindow();
-                    infowindow2.setContent(response.routes[0].legs[0].distance.text + "<br>" + response.routes[0].legs[0].duration.text + " ");
-                    infowindow2.setPosition(response.routes[0].legs[0].end_location);
-                    infowindow2.open(map);
+                    var warn = Math.round(response.routes[0].legs[0].duration.value/60);
+                    var warnpro = (warn/30)*100;
+                    document.getElementById('duration'+nro).setAttribute("style","width:"+warnpro+"%");
+                    document.getElementById('wait'+nro).setAttribute("style","width:33%");
+                    document.getElementById('nohurry'+nro).setAttribute("style","width:"+(100-warnpro-33)+"%");
+
+                    document.getElementById('time'+nro).innerHTML ='<img width="10" height="15" src="glyphicons-563-person-walking.png"> '+ warn + ' min - '+response.routes[0].legs[0].distance.text;
+
+                    if (spldeps.length > 0) {
+                        var spanstring = "";
+                        for (var i = 0; i < spldeps.length; i++) {
+                            spanstring = spanstring + '<span style=" font-weight: bold; position:absolute; margin-left:'+((((parseInt(spltime[i]))/30)*100)-(warnpro/2))+'%" >'+spldeps[i]+'</span>';             
+                        };
+                        document.getElementById('duration'+nro).innerHTML = spanstring;
+                    };
                 } else {
                     window.alert('Directions request failed due to ' + status);
                 }
