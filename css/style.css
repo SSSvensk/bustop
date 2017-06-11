@@ -27,19 +27,48 @@ table {
     display:none;
 }
 
+.tilesd {
+    display: inline-block;
+    height: 100%;
+    line-height: 100px;
+}
+
+#tilediv {
+    border: none;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    font-size: 150%;
+}
+
+#yellowdiv {
+    width: 10%;
+    background-color: #F0AD4E;
+}
+
+#greendiv {
+    width: 80%;
+    background-color: #5CB85C;
+}
+
+#reddiv {
+    width: 10%;
+    background-color: #D9534F;
+}
+
 .tile {
-    color: white;
+    color: #FFFFFF;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-family: Roboto, sans-serif;
+    font-family: Helvetica;
     font-size: 20px;
     font-weight: 200;
     letter-spacing: .005em;
 }
 
 .active {
-    background:  darkslateblue;
+    background: #F5F5F5;
     flex: 1 1 auto;
     display: flex;
 }
@@ -47,12 +76,8 @@ table {
  .map {
     height: 350px;
     width: 100%;
-    background-color: #CEE3F6;
+    background-color: #F5F5F5;
  }
-
- .panel-default > .panel-heading {
-    background-color:red;
-}
 
 .circle {
     width: 11px;
@@ -80,6 +105,27 @@ table {
     text-align: right;
 }
 
-.departs {
-    padding-top: 10px;
+.service {
+    padding-top: 15px;
+}
+
+.walkingtime {
+    background-color: #F5F5F5;
+    padding-left: 15px;
+}
+
+.toppanel {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #FFFFFF;
+}
+.panel-heading:hover {
+    background-color: #F0EDE5 !important;
+}
+
+.panel-group {
+    position: absolute;
+    width: 100%;
 }
